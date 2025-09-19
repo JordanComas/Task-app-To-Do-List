@@ -1,0 +1,26 @@
+.pageWrapper {
+  min-height: 100%; /* ensures page fills main content area */
+  /* background-color: #fafafa; */
+  padding: 1rem 4rem 0 4rem;
+  background-color: rgba(70, 70, 76, 0.515);
+}
+
+.legend {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  margin: 5px 0 0 0;
+}

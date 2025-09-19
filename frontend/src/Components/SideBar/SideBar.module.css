@@ -1,0 +1,40 @@
+.sidebar {
+  width: 180px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.3);
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+}
+
+.navList li {
+  margin: 0.5rem 0;
+}
+
+.navList li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+}
+
+.navList li a:hover {
+  text-decoration: none;
+  font-weight: bold;
+  color: red;
+}
+
+.creator {
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.427);
+  font-size: small;
+}
