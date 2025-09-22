@@ -42,6 +42,11 @@
   gap: 1rem;
   word-wrap: break-word;
   overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.taskItem:hover {
+  background-color: #ececec74;
 }
 
 .taskItem span {
@@ -74,7 +79,7 @@
 }
 
 .taskItem.completed {
-  background-color: #7e7f83;
+  background-color: #7e7f833a;
   color: #f3f3f4;
   text-decoration: line-through;
   border-left: 4px solid #14110f;
