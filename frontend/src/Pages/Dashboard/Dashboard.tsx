@@ -4,17 +4,26 @@ import styles from "./Dashboard.module.css";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Task } from "../../types";
 import { fetchTasks } from "../../Services/taskServices";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { token } = useAuth();
 
   useEffect(() => {
+    if (!token) return; // wait until token is available
+
     const loadTasks = async () => {
-      const data = await fetchTasks();
-      setTasks(data);
+      try {
+        const data = await fetchTasks(token);
+        setTasks(data);
+      } catch (err) {
+        console.error("Failed to load tasks:", err);
+      }
     };
+
     loadTasks();
-  }, []);
+  }, [token]);
 
   const completedCount = tasks.filter((t) => t.completed).length;
   const uncompletedCount = tasks.length - completedCount;
@@ -28,7 +37,7 @@ const Dashboard: React.FC = () => {
     { name: "Uncompleted", value: uncompletedCount, color: "#f44336" },
   ];
 
-  const COLORS = ["#4caf50", "#f44336"];
+  const COLORS = ["#4caf50", "#f44336"]; // green for completed, red for uncompleted
 
   return (
     <div className={styles.pageWrapper}>

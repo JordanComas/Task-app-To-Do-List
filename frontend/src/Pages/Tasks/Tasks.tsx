@@ -8,8 +8,10 @@ import {
 } from "../../Services/taskServices";
 import { FaTrash } from "react-icons/fa";
 import styles from "./Tasks.module.css";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const Tasks: React.FC = () => {
+  const { token } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
   const [showNewInput, setShowNewInput] = useState(false);
@@ -17,11 +19,13 @@ const Tasks: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Load tasks once
+  // Load tasks once token is available
   useEffect(() => {
+    if (!token) return;
+
     const loadTasks = async () => {
       try {
-        const data = await fetchTasks();
+        const data = await fetchTasks(token);
         setTasks(data);
         setError(null);
       } catch (err) {
@@ -29,8 +33,9 @@ const Tasks: React.FC = () => {
         setError("Failed to load tasks");
       }
     };
+
     loadTasks();
-  }, []);
+  }, [token]);
 
   // Close new task input when clicking outside
   useEffect(() => {
@@ -48,9 +53,9 @@ const Tasks: React.FC = () => {
   }, [showNewInput]);
 
   const handleAddTask = async () => {
-    if (!newTask) return;
+    if (!newTask || !token) return;
     try {
-      const task = await addTask(newTask);
+      const task = await addTask(newTask, token);
       setTasks((prev) => [...prev, task]);
       setNewTask("");
       setShowNewInput(false);
@@ -62,43 +67,24 @@ const Tasks: React.FC = () => {
   };
 
   const handleToggleTask = async (id: string) => {
-    // Optimistically update the UI
-    setTasks((prev) =>
-      prev.map((task) =>
-        task._id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-
+    if (!token) return;
     try {
-      await toggleTask(id);
-      // No need to re-fetch, UI already updated
+      const updatedTask = await toggleTask(id, token);
+      setTasks((prev) => prev.map((t) => (t._id === id ? updatedTask : t)));
     } catch (err) {
       console.error(err);
       setError("Failed to update task");
-      // Revert UI change if request fails
-      setTasks((prev) =>
-        prev.map((task) =>
-          task._id === id ? { ...task, completed: !task.completed } : task
-        )
-      );
     }
   };
 
   const handleDeleteTask = async (id: string) => {
-    // Save current tasks in case we need to revert
-    const previousTasks = [...tasks];
-
-    // Optimistically remove the task from UI
-    setTasks((prev) => prev.filter((t) => t._id !== id));
-
+    if (!token) return;
     try {
-      await deleteTask(id);
-      // Success — no further action needed
+      await deleteTask(id, token);
+      setTasks((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
       console.error(err);
       setError("Failed to delete task");
-      // Revert UI if request fails
-      setTasks(previousTasks);
     }
   };
 
