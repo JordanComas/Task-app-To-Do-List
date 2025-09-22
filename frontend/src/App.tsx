@@ -1,31 +1,40 @@
-// src/App.tsx
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import Layout from "./Components/Layout/Layout";
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import Calendar from "./Pages/Calendar/Calendar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./Pages/Login/Login";
 import Tasks from "./Pages/Tasks/Tasks";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import Sidebar from "./Components/SideBar/SideBar";
+import PrivateRoute from "./Components/PrivateRoute";
+import { useAuth } from "./Contexts/AuthContext";
 
-const App: React.FC = () => {
+function App() {
+  const { token } = useAuth();
+
   return (
     <Router>
+      {token && <Sidebar />}
+
       <Routes>
-        {/* Layout wraps all pages */}
-        <Route path="/" element={<Layout />}>
-          {/* Default route */}
-          <Route index element={<Navigate to="/dashboard" />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="calendar" element={<Calendar />} />
-          <Route path="tasks" element={<Tasks />} />
-        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute>
+              <Tasks />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;

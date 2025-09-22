@@ -1,8 +1,10 @@
 .pageWrapper {
-  min-height: 100%; /* ensures page fills main content area */
-  /* background-color: #fafafa; */
+  min-height: 100%;
   padding: 1rem 4rem 0 4rem;
   background-color: rgba(70, 70, 76, 0.515);
+  display: flex;
+  flex-direction: column;
+  margin-left: 180px;
 }
 
 .legend {

@@ -1,6 +1,182 @@
-.pageWrapper {
-  min-height: 100%; /* ensures page fills main content area */
-  /* background-color: #fafafa; */
+.taskContainer {
+  min-height: 100%;
   padding: 1rem 4rem 0 4rem;
-  background-color: red;
+  background-color: #f3f3f4;
+  color: #34312d;
+  display: flex;
+  flex-direction: column;
+  margin-left: 180px;
+  height: 100vh;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  text-align: left;
+  color: #34312d;
+}
+
+.taskListWrapper {
+  position: relative;
+  width: 300px; /* fixed width for each list */
+}
+
+.taskList {
+  list-style: none;
+  padding: 2rem;
+  margin: 0;
+  background-color: #d9c5b2;
+  border-radius: 1rem;
+  min-height: 150px;
+  box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.3);
+  width: 20rem;
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #eee;
+  gap: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.taskItem span {
+  flex: 1;
+  margin: 0;
+}
+
+.deleteBtn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.taskItem:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover {
+  background: #e60000;
+}
+
+.taskItem.completed {
+  background-color: #7e7f83;
+  color: #f3f3f4;
+  text-decoration: line-through;
+  border-left: 4px solid #14110f;
+  transition: all 0.2s ease;
+}
+
+.taskItem.completed:hover {
+  background-color: #ececec74;
+}
+
+.newTaskItem {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.newTaskItem input {
+  flex: 1;
+  padding: 0.5rem 1rem; /* more padding for hotdog look */
+  border-radius: 9999px; /* fully rounded ends */
+  border: none; /* remove default border */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* subtle shadow */
+  outline: none; /* remove blue focus line */
+  background-color: #f3f3f4; /* light background for contrast */
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.newTaskItem input:focus {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* stronger shadow on focus */
+}
+
+.newTaskItem button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.newTaskItem button:hover {
+  background-color: #45a049;
+}
+
+.addTaskBtn {
+  position: absolute;
+  bottom: 10px;
+  right: -70px;
+  background-color: #14110f;
+  color: #f3f3f4;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: background 0.2s ease;
+}
+
+.addTaskBtn:hover {
+  background-color: #45a049;
+}
+
+input::placeholder {
+  color: #7e7f83;
+}
+
+/* Container for checkbox and task text */
+.taskItem input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #7e7f83; /* gray border */
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  background-color: #f3f3f4; /* light background */
+}
+
+.taskItem input[type="checkbox"]:hover {
+  border-color: #d9c5b2; /* warm hover border */
+}
+
+.taskItem input[type="checkbox"]:checked {
+  background-color: #4caf50; /* green when checked */
+  border-color: #4caf50;
+}
+
+/* Checkmark inside the box */
+.taskItem input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

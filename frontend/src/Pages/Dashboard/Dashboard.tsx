@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
     { name: "Uncompleted", value: uncompletedCount, color: "#f44336" },
   ];
 
-  const COLORS = ["#4caf50", "#f44336"]; // green for completed, red for uncompleted
+  const COLORS = ["#4caf50", "#f44336"];
 
   return (
     <div className={styles.pageWrapper}>

@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     <div className={styles.layoutContainer}>
       <Sidebar />
       <div className={styles.mainContent}>
-        <Outlet /> {/* Current page goes here */}
+        <Outlet />
       </div>
     </div>
   );
