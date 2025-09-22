@@ -157,19 +157,21 @@ const Tasks: React.FC = () => {
           ))}
 
           {showNewInput && (
-            <li className={styles.newTaskItem}>
-              <input
-                ref={inputRef}
-                type="text"
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                placeholder="New task..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleAddTask();
-                }}
-              />
-              <button onClick={handleAddTask}>Add</button>
-            </li>
+            <div className={styles.newTaskContainer}>
+              <li className={styles.newTaskItem}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  placeholder="New task..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleAddTask();
+                  }}
+                />
+                <button onClick={handleAddTask}>Add</button>
+              </li>
+            </div>
           )}
         </ul>
 
