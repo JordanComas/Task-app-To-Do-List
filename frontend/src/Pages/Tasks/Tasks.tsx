@@ -14,6 +14,7 @@ const Tasks: React.FC = () => {
   const { token } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
+  const [newDueDate, setNewDueDate] = useState(""); // due date as string
   const [showNewInput, setShowNewInput] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,20 +59,24 @@ const Tasks: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showNewInput]);
 
-  // Add a new task
+  // Add a new task with due date
   const handleAddTask = async () => {
     if (!newTask || !token) return;
+
     const tempTask: Task = {
       _id: `temp-${Date.now()}`,
       title: newTask,
       completed: false,
+      dueDate: newDueDate || undefined,
     };
+
     setTasks((prev) => [...prev, tempTask]);
     setNewTask("");
+    setNewDueDate("");
     setShowNewInput(false);
 
     try {
-      const savedTask = await addTask(tempTask.title, token);
+      const savedTask = await addTask(tempTask.title, token, tempTask.dueDate);
       setTasks((prev) =>
         prev.map((t) => (t._id === tempTask._id ? savedTask : t))
       );
@@ -85,16 +90,14 @@ const Tasks: React.FC = () => {
   const handleToggleTask = async (id: string) => {
     if (!token) return;
 
-    // Optimistically update and reorder tasks
-    setTasks((prev) => {
-      return prev
+    setTasks((prev) =>
+      prev
         .map((t) => (t._id === id ? { ...t, completed: !t.completed } : t))
         .sort((a, b) => {
-          // completed tasks go first
           if (a.completed === b.completed) return 0;
           return a.completed ? -1 : 1;
-        });
-    });
+        })
+    );
 
     try {
       await toggleTask(id, token);
@@ -102,15 +105,15 @@ const Tasks: React.FC = () => {
       console.error(err);
       setError("Failed to update task");
 
-      // Revert toggle and reorder if backend fails
-      setTasks((prev) => {
-        return prev
+      // Revert toggle if backend fails
+      setTasks((prev) =>
+        prev
           .map((t) => (t._id === id ? { ...t, completed: !t.completed } : t))
           .sort((a, b) => {
             if (a.completed === b.completed) return 0;
             return a.completed ? -1 : 1;
-          });
-      });
+          })
+      );
     }
   };
 
@@ -134,44 +137,62 @@ const Tasks: React.FC = () => {
       <h1 className={styles.title}>My Tasks</h1>
       <div className={styles.taskListWrapper} ref={containerRef}>
         <ul className={styles.taskList}>
-          {tasks.map((task) => (
-            <li
-              key={task._id}
-              className={`${styles.taskItem} ${
-                task.completed ? styles.completed : ""
-              }`}
-            >
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleToggleTask(task._id)}
-              />
-              <span>{task.title}</span>
-              <button
-                className={styles.deleteBtn}
-                onClick={() => handleDeleteTask(task._id)}
+          {tasks.map((task) => {
+            // Convert string "YYYY-MM-DD" to local Date to avoid day-before issue
+            const localDate = task.dueDate
+              ? (() => {
+                  const [year, month, day] = task.dueDate
+                    .split("-")
+                    .map(Number);
+                  return new Date(year, month - 1, day);
+                })()
+              : null;
+
+            return (
+              <li
+                key={task._id}
+                className={`${styles.taskItem} ${
+                  task.completed ? styles.completed : ""
+                }`}
               >
-                <FaTrash />
-              </button>
-            </li>
-          ))}
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggleTask(task._id)}
+                />
+                <span>
+                  {task.title}
+                  {localDate ? ` (Due: ${localDate.toLocaleDateString()})` : ""}
+                </span>
+                <button
+                  className={styles.deleteBtn}
+                  onClick={() => handleDeleteTask(task._id)}
+                >
+                  <FaTrash />
+                </button>
+              </li>
+            );
+          })}
 
           {showNewInput && (
-            <div className={styles.newTaskContainer}>
-              <li className={styles.newTaskItem}>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="New task..."
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddTask();
-                  }}
-                />
-                <button onClick={handleAddTask}>Add</button>
-              </li>
-            </div>
+            <li className={styles.newTaskItem}>
+              <input
+                ref={inputRef}
+                type="text"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="New task..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddTask();
+                }}
+              />
+              <input
+                type="date"
+                value={newDueDate}
+                onChange={(e) => setNewDueDate(e.target.value)}
+              />
+              <button onClick={handleAddTask}>Add</button>
+            </li>
           )}
         </ul>
 
@@ -186,6 +207,7 @@ const Tasks: React.FC = () => {
             +
           </button>
         )}
+
         {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
       </div>
     </div>

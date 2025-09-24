@@ -1,74 +1,93 @@
-import React, { useState, useEffect } from "react";
-import Calendar from "react-calendar"; // or react-day-picker etc.
+import React, { useEffect, useState, useRef } from "react";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 import { fetchTasks } from "../../Services/taskServices";
 import { Task } from "../../types";
-import styles from "./CalendarPage.module.css";
 import { useAuth } from "../../Contexts/AuthContext";
+import styles from "./Calendar.module.css";
+import { parse, format } from "date-fns";
 
-const CalendarPage: React.FC = () => {
+const Calendar: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const { token } = useAuth();
+  const taskListRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     if (!token) return;
-
-    const loadTasks = async () => {
-      try {
-        const data = await fetchTasks(token);
-
-        // Sort: completed tasks first
-        const sorted = data.sort((a, b) => {
-          if (a.completed === b.completed) return 0;
-          return a.completed ? -1 : 1;
-        });
-
-        setTasks(sorted);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load tasks");
-      }
-    };
-
-    loadTasks();
+    fetchTasks(token).then(setTasks);
   }, [token]);
 
-  const tasksForDate = (date: Date) => {
-    // filter tasks matching date
-    return tasks.filter(
-      (task) => new Date(task.dueDate).toDateString() === date.toDateString()
+  const parseLocalDate = (dateStr: string) =>
+    parse(dateStr, "yyyy-MM-dd", new Date());
+
+  const tasksForDate = (date: Date) =>
+    tasks.filter(
+      (task) =>
+        task.dueDate &&
+        parseLocalDate(task.dueDate).toDateString() === date.toDateString()
     );
-  };
+
+  const hasTasks = (date: Date) =>
+    tasks.some(
+      (task) =>
+        task.dueDate &&
+        parseLocalDate(task.dueDate).toDateString() === date.toDateString()
+    );
+
+  // Track scroll for shadow
+  useEffect(() => {
+    const el = taskListRef.current;
+    if (!el) return;
+
+    const onScroll = () => setScrolled(el.scrollTop > 0);
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <div className={styles.calendarContainer}>
-      <h1>Calendar</h1>
-      <Calendar
-        onChange={(date: Date) => setSelectedDate(date)}
-        value={selectedDate}
-        tileContent={({ date, view }) => {
-          // view === "month"
-          const t = tasksForDate(date);
-          if (t.length > 0) {
-            return <div className={styles.taskIndicator}></div>;
-          }
-          return null;
-        }}
-      />
-      <div className={styles.taskList}>
-        <h2>Tasks for {selectedDate.toDateString()}</h2>
-        {tasksForDate(selectedDate).map((task) => (
-          <div key={task._id} className={styles.taskItem}>
-            {task.title}
+    <div className={styles.calendarWrapper}>
+      <div className={styles.calendarContainer}>
+        <h1>📅 Task Calendar</h1>
+
+        <DayPicker
+          mode="single"
+          selected={selectedDate}
+          onSelect={setSelectedDate}
+          modifiers={{ dayWithTask: hasTasks }}
+          modifiersClassNames={{ dayWithTask: "dayWithTask" }}
+        />
+
+        {selectedDate && (
+          <div
+            ref={taskListRef}
+            className={`${styles.taskListWrapper} ${
+              scrolled ? styles.scrolled : ""
+            }`}
+          >
+            <h2>Tasks on {format(selectedDate, "PPP")}</h2>
+            {tasksForDate(selectedDate).length === 0 ? (
+              <p>No tasks due on this day.</p>
+            ) : (
+              <ul className={styles.tasksUl}>
+                {tasksForDate(selectedDate).map((task) => (
+                  <li
+                    key={task._id}
+                    className={
+                      task.completed ? styles.completed : styles.notCompleted
+                    }
+                  >
+                    {task.title} {task.completed ? "✅" : "❌"}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        ))}
-        {tasksForDate(selectedDate).length === 0 && <p>No tasks</p>}
-        <button className={styles.addForDateBtn}>+ Add Task</button>
+        )}
       </div>
     </div>
   );
 };
 
-export default CalendarPage;
+export default Calendar;
