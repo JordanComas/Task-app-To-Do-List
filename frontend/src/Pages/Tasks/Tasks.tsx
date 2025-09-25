@@ -12,7 +12,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { parse, format } from "date-fns";
 import styles from "./Tasks.module.css";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaFilter } from "react-icons/fa";
 
 const Tasks: React.FC = () => {
   const { token } = useAuth();
@@ -29,6 +29,9 @@ const Tasks: React.FC = () => {
   >("");
   const [newCategory, setNewCategory] = useState<string>("");
   const [showOptional, setShowOptional] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterPriority, setFilterPriority] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
 
   // Load tasks
   useEffect(() => {
@@ -149,6 +152,14 @@ const Tasks: React.FC = () => {
     }
   };
 
+  const filteredTasks = (
+    selectedDate ? tasksForDate(selectedDate) : tasks
+  ).filter(
+    (task) =>
+      (filterPriority === "" || task.priority === filterPriority) &&
+      (filterCategory === "" || task.category === filterCategory)
+  );
+
   return (
     <div className={styles.wrapper}>
       {/* Calendar Section */}
@@ -180,15 +191,21 @@ const Tasks: React.FC = () => {
         className={`${styles.taskSection} ${scrolled ? styles.scrolled : ""}`}
         ref={taskListRef}
       >
-        <h2>
-          {selectedDate
-            ? `Tasks on ${format(selectedDate, "PPP")}`
-            : "My Tasks"}
-        </h2>
+        <div className={styles.taskHeader}>
+          <h2>
+            {selectedDate
+              ? `Tasks on ${format(selectedDate, "PPP")}`
+              : "My Tasks"}
+          </h2>
+          {/* Filter Icon */}
+          <FaFilter
+            className={styles.filterIcon}
+            onClick={() => setShowFilters(!showFilters)}
+          />
+        </div>
 
         {/* Add Task Form */}
         <div className={styles.addTaskForm}>
-          {/* Main task input */}
           <input
             type="text"
             value={newTask}
@@ -269,9 +286,42 @@ const Tasks: React.FC = () => {
           </button>
         )}
 
+        {/* Filter Panel */}
+        <div
+          className={`${styles.filterPanel} ${
+            showFilters ? styles.show : styles.hide
+          }`}
+        >
+          <div className={styles.inputGroup}>
+            <label>Priority Filter</label>
+            <select
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Category Filter</label>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+        </div>
+
         {/* Task List */}
         <ul className={styles.taskList}>
-          {(selectedDate ? tasksForDate(selectedDate) : tasks).map((task) => {
+          {filteredTasks.map((task) => {
             const localDate = task.dueDate
               ? (() => {
                   const [y, m, d] = task.dueDate.split("-").map(Number);
@@ -300,7 +350,6 @@ const Tasks: React.FC = () => {
                     </span>
                   )}
 
-                  {/* Badges */}
                   <div className={styles.badges}>
                     {task.priority && (
                       <span

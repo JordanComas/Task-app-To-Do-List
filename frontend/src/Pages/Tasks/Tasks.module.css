@@ -43,15 +43,33 @@
   overflow-y: auto;
   transition: box-shadow 0.2s ease;
   background-color: #fff;
+  position: relative;
 }
 
 .taskSection.scrolled {
   box-shadow: inset 0 5px 8px -5px rgba(0, 0, 0, 0.3);
 }
 
+.taskHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .taskSection h2 {
   margin: 0 0 1rem 0;
   color: #34312d;
+}
+
+.filterIcon {
+  font-size: 1.2rem;
+  color: #34312d;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.filterIcon:hover {
+  color: #14110f;
 }
 
 /* === Add Task Form === */
@@ -321,4 +339,51 @@
 
 .low {
   background-color: #27ae60; /* green */
+}
+
+/* === Filter Panel === */
+.filterPanel {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  margin-bottom: 1rem;
+  max-height: 0;
+  opacity: 0;
+}
+
+.filterPanel.show {
+  max-height: 200px; /* adjust as needed */
+  opacity: 1;
+}
+
+.filterPanel .inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.filterPanel .inputGroup label {
+  font-size: 0.75rem;
+  color: #7e7f83;
+  margin-bottom: 0.2rem;
+}
+
+.filterPanel select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  background-color: #f3f3f4;
+  color: #34312d;
+}
+
+.filterPanel select:focus {
+  border-color: #34312d;
+  box-shadow: 0 0 4px rgba(52, 49, 45, 0.3);
+  background-color: #fff;
 }
