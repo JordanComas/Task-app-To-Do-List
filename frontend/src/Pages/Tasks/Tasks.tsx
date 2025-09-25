@@ -24,6 +24,11 @@ const Tasks: React.FC = () => {
   const taskListRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
+  const [newPriority, setNewPriority] = useState<
+    "High" | "Medium" | "Low" | ""
+  >("");
+  const [newCategory, setNewCategory] = useState<string>("");
+  const [showOptional, setShowOptional] = useState(false);
 
   // Load tasks
   useEffect(() => {
@@ -88,14 +93,24 @@ const Tasks: React.FC = () => {
       title: newTask,
       completed: false,
       dueDate: newDueDate || undefined,
+      priority: newPriority || undefined, // ← new line
+      category: newCategory || undefined, // ← new line
     };
 
     setTasks((prev) => [...prev, tempTask]);
     setNewTask("");
     setNewDueDate("");
+    setNewPriority("");
+    setNewCategory("");
 
     try {
-      const savedTask = await addTask(tempTask.title, token, tempTask.dueDate);
+      const savedTask = await addTask(
+        tempTask.title,
+        token,
+        tempTask.dueDate,
+        tempTask.priority,
+        tempTask.category
+      );
       setTasks((prev) =>
         prev.map((t) => (t._id === tempTask._id ? savedTask : t))
       );
@@ -148,11 +163,11 @@ const Tasks: React.FC = () => {
               selectedDate &&
               date.toDateString() === selectedDate.toDateString()
             ) {
-              setSelectedDate(undefined); // toggle off if same day clicked
-              setNewDueDate(""); // reset add-task date input
+              setSelectedDate(undefined);
+              setNewDueDate("");
             } else if (date) {
               setSelectedDate(date);
-              setNewDueDate(format(date, "yyyy-MM-dd")); // prefill add-task input
+              setNewDueDate(format(date, "yyyy-MM-dd"));
             }
           }}
           modifiers={{ dayWithTask: hasTasks }}
@@ -171,8 +186,9 @@ const Tasks: React.FC = () => {
             : "My Tasks"}
         </h2>
 
-        {/* Add Task (Top Form) */}
+        {/* Add Task Form */}
         <div className={styles.addTaskForm}>
+          {/* Main task input */}
           <input
             type="text"
             value={newTask}
@@ -180,12 +196,67 @@ const Tasks: React.FC = () => {
             placeholder="New task..."
             onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
           />
-          <input
-            type="date"
-            value={newDueDate}
-            onChange={(e) => setNewDueDate(e.target.value)}
-          />
-          <button onClick={handleAddTask}>Add</button>
+
+          {/* Optional Fields Toggle */}
+          <div className={styles.optionalToggle}>
+            <button
+              type="button"
+              onClick={() => setShowOptional(!showOptional)}
+              className={styles.optionalBtn}
+            >
+              {showOptional
+                ? "Hide optional fields ▲"
+                : "Show optional fields ▼"}
+            </button>
+          </div>
+
+          {/* Optional Inputs */}
+          <div
+            className={`${styles.optionalInputs} ${
+              showOptional ? styles.show : styles.hide
+            }`}
+          >
+            <div className={styles.inputGroup}>
+              <label>Due Date (optional)</label>
+              <input
+                type="date"
+                value={newDueDate}
+                onChange={(e) => setNewDueDate(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Priority (optional)</label>
+              <select
+                value={newPriority}
+                onChange={(e) =>
+                  setNewPriority(e.target.value as "High" | "Medium" | "Low")
+                }
+              >
+                <option value="">Select Priority</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Category (optional)</label>
+              <select
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+              >
+                <option value="">Select Category</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Health">Health</option>
+              </select>
+            </div>
+          </div>
+
+          <button className={styles.addBtn} onClick={handleAddTask}>
+            Add
+          </button>
         </div>
 
         {/* Show All Tasks button */}
@@ -198,6 +269,7 @@ const Tasks: React.FC = () => {
           </button>
         )}
 
+        {/* Task List */}
         <ul className={styles.taskList}>
           {(selectedDate ? tasksForDate(selectedDate) : tasks).map((task) => {
             const localDate = task.dueDate
@@ -227,7 +299,24 @@ const Tasks: React.FC = () => {
                       Due: {localDate.toLocaleDateString()}
                     </span>
                   )}
+
+                  {/* Badges */}
+                  <div className={styles.badges}>
+                    {task.priority && (
+                      <span
+                        className={`${styles.badge} ${
+                          styles[task.priority.toLowerCase()]
+                        }`}
+                      >
+                        {task.priority}
+                      </span>
+                    )}
+                    {task.category && (
+                      <span className={styles.badge}>{task.category}</span>
+                    )}
+                  </div>
                 </div>
+
                 <button
                   className={styles.deleteBtn}
                   onClick={() => handleDeleteTask(task._id)}

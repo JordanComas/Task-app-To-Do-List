@@ -1,6 +1,8 @@
 export interface Task {
-  _id: string; // MongoDB ID
+  _id: string;
   title: string;
   completed: boolean;
-  dueDate?: string; // ISO date string
+  dueDate?: string;
+  priority?: "High" | "Medium" | "Low";
+  category?: string; // e.g., "Work", "Personal", "Health"
 }

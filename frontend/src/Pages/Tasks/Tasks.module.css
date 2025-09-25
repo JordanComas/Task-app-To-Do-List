@@ -1,5 +1,3 @@
-/* src/Pages/CalendarTasks/CalendarTasks.module.css */
-
 .wrapper {
   display: flex;
   height: 100vh;
@@ -56,15 +54,18 @@
   color: #34312d;
 }
 
-/* === Add Task Form (Top) === */
+/* === Add Task Form === */
 .addTaskForm {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .addTaskForm input[type="text"],
-.addTaskForm input[type="date"] {
+.addTaskForm input[type="date"],
+.addTaskForm select {
   flex: 1;
   padding: 0.6rem;
   border: 1px solid #ccc;
@@ -73,15 +74,30 @@
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
   background-color: #f3f3f4;
+  color: #34312d;
 }
 
 .addTaskForm input[type="text"]:focus,
-.addTaskForm input[type="date"]:focus {
+.addTaskForm input[type="date"]:focus,
+.addTaskForm select:focus {
   border-color: #34312d;
   box-shadow: 0 0 4px rgba(52, 49, 45, 0.3);
+  background-color: #fff;
 }
 
-.addTaskForm button {
+.addTaskForm select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 1.5rem;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2334312d' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.addTaskForm .addBtn {
   background: #34312d;
   color: #fff;
   border: none;
@@ -91,8 +107,58 @@
   transition: background 0.2s;
 }
 
-.addTaskForm button:hover {
+.addTaskForm .addBtn:hover {
   background: #14110f;
+}
+
+/* Optional fields toggle button */
+.optionalToggle .optionalBtn {
+  background: none;
+  border: none;
+  color: #34312d;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+  padding: 0;
+  margin-top: 0.2rem;
+}
+
+.optionalToggle button:hover {
+  text-decoration: underline;
+}
+
+/* Optional inputs container with smooth slide */
+.optionalInputs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+  background-color: #ffffff;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.optionalInputs.show {
+  max-height: 500px;
+  opacity: 1;
+  padding: 0.5rem;
+}
+
+/* Input groups inside optional fields */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.inputGroup label {
+  font-size: 0.75rem;
+  color: #7e7f83;
+  margin-bottom: 0.2rem;
 }
 
 /* === Task List === */
@@ -197,10 +263,12 @@
   cursor: pointer;
   margin-bottom: 1rem;
 }
+
 .clearDateBtn:hover {
   background: #14110f;
 }
 
+/* === DayPicker Global === */
 :global(.rdp-root) {
   width: 100%;
   --rdp-day-width: 60px;
@@ -226,4 +294,31 @@
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
+}
+
+/* === Badges === */
+.badges {
+  margin-top: 4px;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  background-color: #7e7f83; /* default gray */
+  color: #fff;
+}
+
+.high {
+  background-color: #c0392b; /* red */
+}
+
+.medium {
+  background-color: #f39c12; /* orange */
+}
+
+.low {
+  background-color: #27ae60; /* green */
 }

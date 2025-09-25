@@ -21,11 +21,13 @@ export const fetchTasks = async (token: string): Promise<Task[]> => {
 export const addTask = async (
   title: string,
   token: string,
-  dueDate?: string
+  dueDate?: string,
+  priority?: "High" | "Medium" | "Low",
+  category?: string
 ): Promise<Task> => {
   const response = await axios.post(
     `${API_URL}/tasks`,
-    { title, dueDate }, // include dueDate in body
+    { title, dueDate, priority, category }, // send them in body
     { headers: getAuthHeaders(token) }
   );
   return response.data;

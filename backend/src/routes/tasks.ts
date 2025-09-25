@@ -19,11 +19,17 @@ router.get("/", async (req: any, res) => {
 
 // Add a task (with optional dueDate)
 router.post("/", async (req: any, res) => {
-  const { title, dueDate } = req.body;
+  const { title, dueDate, priority, category } = req.body;
   if (!title) return res.status(400).json({ message: "Title required" });
 
   try {
-    const task = new Task({ title, user: req.userId, dueDate });
+    const task = new Task({
+      title,
+      user: req.userId,
+      dueDate,
+      priority,
+      category,
+    });
     await task.save();
     res.json(task);
   } catch (err) {
