@@ -1,3 +1,4 @@
+// src/Pages/CalendarTasks/CalendarTasks.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { Task } from "../../types";
 import {
@@ -6,60 +7,79 @@ import {
   toggleTask,
   deleteTask,
 } from "../../Services/taskServices";
-import { FaTrash } from "react-icons/fa";
-import styles from "./Tasks.module.css";
 import { useAuth } from "../../Contexts/AuthContext";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { parse, format } from "date-fns";
+import styles from "./Tasks.module.css";
+import { FaTrash } from "react-icons/fa";
 
 const Tasks: React.FC = () => {
   const { token } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
-  const [newDueDate, setNewDueDate] = useState(""); // due date as string
-  const [showNewInput, setShowNewInput] = useState(false);
+  const [newDueDate, setNewDueDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const taskListRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
-  // Load tasks once token is available
+  // Load tasks
   useEffect(() => {
     if (!token) return;
-
-    const loadTasks = async () => {
-      try {
-        const data = await fetchTasks(token);
-
-        // Sort: completed tasks first
-        const sorted = data.sort((a, b) => {
-          if (a.completed === b.completed) return 0;
-          return a.completed ? -1 : 1;
-        });
-
-        setTasks(sorted);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load tasks");
-      }
-    };
-
-    loadTasks();
+    fetchTasks(token)
+      .then(setTasks)
+      .catch(() => setError("Failed to load tasks"));
   }, [token]);
 
+  // Shadow on scroll
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const el = taskListRef.current;
+    if (!el) return;
+    const onScroll = () => setScrolled(el.scrollTop > 0);
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (
-        showNewInput &&
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        calendarRef.current &&
+        taskListRef.current &&
+        !calendarRef.current.contains(e.target as Node) &&
+        !taskListRef.current.contains(e.target as Node)
       ) {
-        setShowNewInput(false);
+        setSelectedDate(undefined);
+        setNewDueDate(""); // reset add-task date input
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showNewInput]);
+  }, []);
 
-  // Add a new task with due date
+  // Helpers
+  const parseLocalDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1, day); // month is 0-indexed
+  };
+
+  const tasksForDate = (date: Date) =>
+    tasks.filter(
+      (task) =>
+        task.dueDate &&
+        parseLocalDate(task.dueDate).toDateString() === date.toDateString()
+    );
+
+  const hasTasks = (date: Date) =>
+    tasks.some(
+      (task) =>
+        task.dueDate &&
+        parseLocalDate(task.dueDate).toDateString() === date.toDateString()
+    );
+
+  // Add new task
   const handleAddTask = async () => {
     if (!newTask || !token) return;
 
@@ -73,7 +93,6 @@ const Tasks: React.FC = () => {
     setTasks((prev) => [...prev, tempTask]);
     setNewTask("");
     setNewDueDate("");
-    setShowNewInput(false);
 
     try {
       const savedTask = await addTask(tempTask.title, token, tempTask.dueDate);
@@ -91,12 +110,7 @@ const Tasks: React.FC = () => {
     if (!token) return;
 
     setTasks((prev) =>
-      prev
-        .map((t) => (t._id === id ? { ...t, completed: !t.completed } : t))
-        .sort((a, b) => {
-          if (a.completed === b.completed) return 0;
-          return a.completed ? -1 : 1;
-        })
+      prev.map((t) => (t._id === id ? { ...t, completed: !t.completed } : t))
     );
 
     try {
@@ -104,25 +118,13 @@ const Tasks: React.FC = () => {
     } catch (err) {
       console.error(err);
       setError("Failed to update task");
-
-      // Revert toggle if backend fails
-      setTasks((prev) =>
-        prev
-          .map((t) => (t._id === id ? { ...t, completed: !t.completed } : t))
-          .sort((a, b) => {
-            if (a.completed === b.completed) return 0;
-            return a.completed ? -1 : 1;
-          })
-      );
     }
   };
 
   const handleDeleteTask = async (id: string) => {
     if (!token) return;
-
     const removedTask = tasks.find((t) => t._id === id);
     setTasks((prev) => prev.filter((t) => t._id !== id));
-
     try {
       await deleteTask(id, token);
     } catch (err) {
@@ -133,37 +135,99 @@ const Tasks: React.FC = () => {
   };
 
   return (
-    <div className={styles.taskContainer}>
-      <h1 className={styles.title}>My Tasks</h1>
-      <div className={styles.taskListWrapper} ref={containerRef}>
+    <div className={styles.wrapper}>
+      {/* Calendar Section */}
+      <div ref={calendarRef} className={styles.calendarSection}>
+        <h1>📅 Task Calendar</h1>
+        <DayPicker
+          mode="single"
+          selected={selectedDate}
+          onSelect={(date) => {
+            if (
+              date &&
+              selectedDate &&
+              date.toDateString() === selectedDate.toDateString()
+            ) {
+              setSelectedDate(undefined); // toggle off if same day clicked
+              setNewDueDate(""); // reset add-task date input
+            } else if (date) {
+              setSelectedDate(date);
+              setNewDueDate(format(date, "yyyy-MM-dd")); // prefill add-task input
+            }
+          }}
+          modifiers={{ dayWithTask: hasTasks }}
+          modifiersClassNames={{ dayWithTask: styles.dayWithTask }}
+        />
+      </div>
+
+      {/* Task Section */}
+      <div
+        className={`${styles.taskSection} ${scrolled ? styles.scrolled : ""}`}
+        ref={taskListRef}
+      >
+        <h2>
+          {selectedDate
+            ? `Tasks on ${format(selectedDate, "PPP")}`
+            : "My Tasks"}
+        </h2>
+
+        {/* Add Task (Top Form) */}
+        <div className={styles.addTaskForm}>
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="New task..."
+            onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
+          />
+          <input
+            type="date"
+            value={newDueDate}
+            onChange={(e) => setNewDueDate(e.target.value)}
+          />
+          <button onClick={handleAddTask}>Add</button>
+        </div>
+
+        {/* Show All Tasks button */}
+        {selectedDate && (
+          <button
+            className={styles.clearDateBtn}
+            onClick={() => setSelectedDate(undefined)}
+          >
+            Show All Tasks
+          </button>
+        )}
+
         <ul className={styles.taskList}>
-          {tasks.map((task) => {
-            // Convert string "YYYY-MM-DD" to local Date to avoid day-before issue
+          {(selectedDate ? tasksForDate(selectedDate) : tasks).map((task) => {
             const localDate = task.dueDate
               ? (() => {
-                  const [year, month, day] = task.dueDate
-                    .split("-")
-                    .map(Number);
-                  return new Date(year, month - 1, day);
+                  const [y, m, d] = task.dueDate.split("-").map(Number);
+                  return new Date(y, m - 1, d);
                 })()
               : null;
 
             return (
-              <li
-                key={task._id}
-                className={`${styles.taskItem} ${
-                  task.completed ? styles.completed : ""
-                }`}
-              >
+              <li key={task._id} className={styles.taskItem}>
                 <input
                   type="checkbox"
                   checked={task.completed}
                   onChange={() => handleToggleTask(task._id)}
                 />
-                <span>
-                  {task.title}
-                  {localDate ? ` (Due: ${localDate.toLocaleDateString()})` : ""}
-                </span>
+                <div className={styles.taskContent}>
+                  <span
+                    className={`${styles.taskTitle} ${
+                      task.completed ? styles.completed : ""
+                    }`}
+                  >
+                    {task.title}
+                  </span>
+                  {localDate && (
+                    <span className={styles.taskDueDate}>
+                      Due: {localDate.toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
                 <button
                   className={styles.deleteBtn}
                   onClick={() => handleDeleteTask(task._id)}
@@ -173,42 +237,9 @@ const Tasks: React.FC = () => {
               </li>
             );
           })}
-
-          {showNewInput && (
-            <li className={styles.newTaskItem}>
-              <input
-                ref={inputRef}
-                type="text"
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                placeholder="New task..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleAddTask();
-                }}
-              />
-              <input
-                type="date"
-                value={newDueDate}
-                onChange={(e) => setNewDueDate(e.target.value)}
-              />
-              <button onClick={handleAddTask}>Add</button>
-            </li>
-          )}
         </ul>
 
-        {!showNewInput && (
-          <button
-            className={styles.addTaskBtn}
-            onClick={() => {
-              setShowNewInput(true);
-              setTimeout(() => inputRef.current?.focus(), 0);
-            }}
-          >
-            +
-          </button>
-        )}
-
-        {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </div>
     </div>
   );

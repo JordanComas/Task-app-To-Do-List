@@ -12,9 +12,6 @@ const Sidebar: React.FC = () => {
           <NavLink to="/dashboard">Dashboard</NavLink>
         </li>
         <li>
-          <NavLink to="/calendar">Calendar</NavLink>
-        </li>
-        <li>
           <NavLink to="/tasks">Tasks</NavLink>
         </li>
         <li>

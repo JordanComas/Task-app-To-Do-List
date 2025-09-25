@@ -1,191 +1,229 @@
-.taskContainer {
-  min-height: 100%;
-  padding: 1rem 4rem 0 4rem;
-  background-color: #f3f3f4;
-  color: #34312d;
+/* src/Pages/CalendarTasks/CalendarTasks.module.css */
+
+.wrapper {
   display: flex;
-  flex-direction: column;
-  margin-left: 180px;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
+  margin-left: 230px;
+  background-color: #f3f3f4;
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 1rem 0;
-  text-align: left;
+/* === Calendar Section === */
+.calendarSection {
+  flex: 1;
+  padding: 1rem;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.calendarSection h1 {
+  margin-bottom: 1rem;
   color: #34312d;
 }
 
-.taskListWrapper {
+.dayWithTask {
   position: relative;
-  width: 300px; /* fixed width for each list */
 }
 
+.dayWithTask::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background-color: #34312d;
+  border-radius: 50%;
+  position: absolute;
+  left: 40%;
+  bottom: 20%;
+  transform: translateX(-50%);
+}
+
+/* === Task Section === */
+.taskSection {
+  flex: 2;
+  padding: 1.5rem;
+  overflow-y: auto;
+  transition: box-shadow 0.2s ease;
+  background-color: #fff;
+}
+
+.taskSection.scrolled {
+  box-shadow: inset 0 5px 8px -5px rgba(0, 0, 0, 0.3);
+}
+
+.taskSection h2 {
+  margin: 0 0 1rem 0;
+  color: #34312d;
+}
+
+/* === Add Task Form (Top) === */
+.addTaskForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.addTaskForm input[type="text"],
+.addTaskForm input[type="date"] {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  background-color: #f3f3f4;
+}
+
+.addTaskForm input[type="text"]:focus,
+.addTaskForm input[type="date"]:focus {
+  border-color: #34312d;
+  box-shadow: 0 0 4px rgba(52, 49, 45, 0.3);
+}
+
+.addTaskForm button {
+  background: #34312d;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.addTaskForm button:hover {
+  background: #14110f;
+}
+
+/* === Task List === */
 .taskList {
   list-style: none;
-  padding: 2rem 2rem 3.5rem 2rem; /* increase bottom padding from 3rem -> 6rem */
+  padding: 0;
   margin: 0;
-  background-color: #d9c5b2;
-  border-radius: 1rem;
-  min-height: 150px;
-  box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.3);
-  width: 20rem;
-}
-
-.newTaskContainer {
-  margin-top: 1rem;
 }
 
 .taskItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid #eee;
-  gap: 1rem;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
-  cursor: pointer;
+  padding: 0.8rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background-color: #f3f3f4;
+  transition: background 0.2s;
 }
 
 .taskItem:hover {
-  background-color: #ececec74;
+  background-color: #d9c5b2;
 }
 
-.taskItem span {
-  flex: 1;
-  margin: 0;
-}
-
-.deleteBtn {
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease, background 0.2s ease;
-  flex-shrink: 0;
-}
-
-.taskItem:hover .deleteBtn {
-  opacity: 1;
-}
-
-.deleteBtn:hover {
-  background: #e60000;
-}
-
-.taskItem.completed {
-  background-color: #7e7f833a;
-  color: #f3f3f4;
-  text-decoration: line-through;
-  border-left: 4px solid #14110f;
-  transition: all 0.2s ease;
-}
-
-.taskItem.completed:hover {
-  background-color: #ececec74;
-}
-
-.newTaskItem {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.newTaskItem input {
-  flex: 1;
-  padding: 0.5rem 1rem; /* more padding for hotdog look */
-  border-radius: 9999px; /* fully rounded ends */
-  border: none; /* remove default border */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* subtle shadow */
-  outline: none; /* remove blue focus line */
-  background-color: #f3f3f4; /* light background for contrast */
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.newTaskItem input:focus {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* stronger shadow on focus */
-}
-
-.newTaskItem button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.newTaskItem button:hover {
-  background-color: #45a049;
-}
-
-.addTaskBtn {
-  position: relative;
-  bottom: 45px;
-  right: -315px;
-  background-color: #14110f;
-  color: #f3f3f4;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  transition: background 0.2s ease;
-}
-
-.addTaskBtn:hover {
-  background-color: #45a049;
-}
-
-input::placeholder {
-  color: #7e7f83;
-}
-
-/* Container for checkbox and task text */
+/* Custom checkbox */
 .taskItem input[type="checkbox"] {
   appearance: none;
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #7e7f83; /* gray border */
-  border-radius: 4px;
-  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #34312d;
+  border-radius: 6px;
+  margin-right: 0.8rem;
   cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
   flex-shrink: 0;
-  transition: all 0.2s ease;
-  background-color: #f3f3f4; /* light background */
-}
-
-.taskItem input[type="checkbox"]:hover {
-  border-color: #d9c5b2; /* warm hover border */
+  margin-top: 4px;
 }
 
 .taskItem input[type="checkbox"]:checked {
-  background-color: #4caf50; /* green when checked */
-  border-color: #4caf50;
+  background-color: #46e549;
+  border-color: #46e549;
 }
 
-/* Checkmark inside the box */
 .taskItem input[type="checkbox"]:checked::after {
-  content: "✔";
-  color: white;
-  font-size: 14px;
+  content: "✓";
+  color: #fff;
   position: absolute;
-  top: 50%;
+  top: -2px;
+  left: 3px;
+  font-size: 14px;
+}
+
+/* === Task Content === */
+.taskContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.taskTitle {
+  color: #34312d;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.taskDueDate {
+  font-size: 0.8rem;
+  color: #7e7f83;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #7e7f83;
+}
+
+/* === Delete Button === */
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #c00;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 0.8rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.1s;
+}
+
+.deleteBtn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.clearDateBtn {
+  background: #34312d;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+.clearDateBtn:hover {
+  background: #14110f;
+}
+
+:global(.rdp-root) {
+  width: 100%;
+  --rdp-day-width: 60px;
+  --rdp-day-height: 60px;
+  --rdp-day_button-border-radius: 8px;
+  --rdp-accent-color: #34312d;
+  --rdp-accent-background-color: #46e549; /* selected day */
+  --rdp-today-color: #d9c5b2; /* today */
+}
+
+/* Dot for tasks */
+:global(.rdp-day.dayWithTask .rdp-day_button) {
+  position: relative;
+}
+
+:global(.rdp-day.dayWithTask .rdp-day_button)::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: #34312d;
+  border-radius: 50%;
+  position: absolute;
   left: 50%;
-  transform: translate(-50%, -50%);
+  bottom: 0;
+  transform: translateX(-50%);
 }
