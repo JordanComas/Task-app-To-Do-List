@@ -1,4 +1,3 @@
-// src/Pages/CalendarTasks/CalendarTasks.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { Task } from "../../types";
 import {
@@ -59,7 +58,7 @@ const Tasks: React.FC = () => {
         !taskListRef.current.contains(e.target as Node)
       ) {
         setSelectedDate(undefined);
-        setNewDueDate(""); // reset add-task date input
+        setNewDueDate("");
       }
     };
 
@@ -70,7 +69,7 @@ const Tasks: React.FC = () => {
   // Helpers
   const parseLocalDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split("-").map(Number);
-    return new Date(year, month - 1, day); // month is 0-indexed
+    return new Date(year, month - 1, day);
   };
 
   const tasksForDate = (date: Date) =>
@@ -96,8 +95,8 @@ const Tasks: React.FC = () => {
       title: newTask,
       completed: false,
       dueDate: newDueDate || undefined,
-      priority: newPriority || undefined, // ← new line
-      category: newCategory || undefined, // ← new line
+      priority: newPriority || undefined,
+      category: newCategory || undefined,
     };
 
     setTasks((prev) => [...prev, tempTask]);

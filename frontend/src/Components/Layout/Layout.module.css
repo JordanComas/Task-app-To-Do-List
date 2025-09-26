@@ -4,7 +4,6 @@
 }
 
 .mainContent {
-  /* margin-left: 180px; default for desktop */
   padding: 0 0 0 2rem;
   overflow-y: auto;
   height: 100vh;

@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Dashboard.tsx
 import React, { useState, useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
@@ -37,7 +36,7 @@ const Dashboard: React.FC = () => {
     { name: "Uncompleted", value: uncompletedCount, color: "#f44336" },
   ];
 
-  const COLORS = ["#4caf50", "#f44336"]; // green for completed, red for uncompleted
+  const COLORS = ["#4caf50", "#f44336"];
 
   return (
     <div className={styles.pageWrapper}>

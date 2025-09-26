@@ -325,20 +325,20 @@
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.7rem;
-  background-color: #7e7f83; /* default gray */
+  background-color: #7e7f83;
   color: #fff;
 }
 
 .high {
-  background-color: #c0392b; /* red */
+  background-color: #c0392b;
 }
 
 .medium {
-  background-color: #f39c12; /* orange */
+  background-color: #f39c12;
 }
 
 .low {
-  background-color: #27ae60; /* green */
+  background-color: #27ae60;
 }
 
 /* === Filter Panel === */
@@ -354,7 +354,7 @@
 }
 
 .filterPanel.show {
-  max-height: 200px; /* adjust as needed */
+  max-height: 200px;
   opacity: 1;
 }
 

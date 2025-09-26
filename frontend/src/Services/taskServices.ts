@@ -1,4 +1,3 @@
-// src/Services/taskServices.ts
 import axios from "axios";
 import { Task } from "../types";
 
@@ -27,7 +26,7 @@ export const addTask = async (
 ): Promise<Task> => {
   const response = await axios.post(
     `${API_URL}/tasks`,
-    { title, dueDate, priority, category }, // send them in body
+    { title, dueDate, priority, category },
     { headers: getAuthHeaders(token) }
   );
   return response.data;
