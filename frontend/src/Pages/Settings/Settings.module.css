@@ -1,0 +1,7 @@
+.wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  margin-left: 212px;
+  background-color: #f3f3f4;
+}

@@ -15,6 +15,9 @@ const Sidebar: React.FC = () => {
           <NavLink to="/tasks">Tasks</NavLink>
         </li>
         <li>
+          <NavLink to="/settings">Settings</NavLink>
+        </li>
+        <li>
           <Logout />
         </li>
       </ul>

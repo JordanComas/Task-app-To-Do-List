@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login/Login";
 import Tasks from "./Pages/Tasks/Tasks";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Settings from "./Pages/Settings/Settings";
 import Sidebar from "./Components/SideBar/SideBar";
 import PrivateRoute from "./Components/PrivateRoute";
 import { useAuth } from "./Contexts/AuthContext";
@@ -29,6 +30,14 @@ function App() {
           element={
             <PrivateRoute>
               <Tasks />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <Settings />
             </PrivateRoute>
           }
         />
