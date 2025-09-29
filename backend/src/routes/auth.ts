@@ -7,20 +7,28 @@ const router = express.Router();
 
 // Signup
 router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
+    // Check if user already exists
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "User exists" });
 
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashed });
+
+    // Create and save user
+    const user = new User({ name, email, password: hashed });
     await user.save();
 
+    // Create JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
       expiresIn: "1d",
     });
 
-    res.json({ token, user: { id: user._id, email: user.email } });
+    res.json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -41,7 +49,10 @@ router.post("/login", async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.json({ token, user: { id: user._id, email: user.email } });
+    res.json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

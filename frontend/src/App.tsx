@@ -1,6 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Login from "./Pages/Login/Login";
+import SignUp from "./Pages/SignUp/SignUp";
 import Tasks from "./Pages/Tasks/Tasks";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Settings from "./Pages/Settings/Settings";
@@ -16,7 +22,23 @@ function App() {
       {token && <Sidebar />}
 
       <Routes>
+        {/* Default route */}
+        <Route
+          path="/"
+          element={
+            token ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        {/* Private Routes */}
         <Route
           path="/dashboard"
           element={
@@ -40,6 +62,12 @@ function App() {
               <Settings />
             </PrivateRoute>
           }
+        />
+
+        {/* Catch-all redirect to login */}
+        <Route
+          path="*"
+          element={<Navigate to={token ? "/dashboard" : "/login"} replace />}
         />
       </Routes>
     </Router>

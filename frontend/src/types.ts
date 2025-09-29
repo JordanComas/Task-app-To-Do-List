@@ -6,3 +6,9 @@ export interface Task {
   priority?: "High" | "Medium" | "Low";
   category?: string; // e.g., "Work", "Personal", "Health"
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}

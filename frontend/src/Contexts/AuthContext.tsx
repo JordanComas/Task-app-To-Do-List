@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type User = { id: string; email: string } | null;
+// Updated User type with name
+type User = { id: string; email: string; name: string } | null;
 
 interface AuthContextType {
   token: string | null;
@@ -22,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return raw ? JSON.parse(raw) : null;
   });
 
-  // keep localStorage in sync with state
+  // Keep localStorage in sync with state
   useEffect(() => {
     if (token) localStorage.setItem("token", token);
     else localStorage.removeItem("token");

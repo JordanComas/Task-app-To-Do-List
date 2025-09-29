@@ -11,8 +11,9 @@ import { useAuth } from "../../Contexts/AuthContext";
 
 const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { token } = useAuth();
+  const { token, user } = useAuth(); // <-- get user
 
+  // Load tasks
   useEffect(() => {
     if (!token) return;
 
@@ -28,6 +29,17 @@ const Dashboard: React.FC = () => {
     loadTasks();
   }, [token]);
 
+  // Determine greeting based on current hour
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const greeting = `${getGreeting()}${user?.name ? `, ${user.name}` : ""}`;
+
+  // --- Task stats & upcoming tasks ---
   const total = tasks.length;
   const completedCount = tasks.filter((t) => t.completed).length;
   const uncompletedCount = total - completedCount;
@@ -49,16 +61,14 @@ const Dashboard: React.FC = () => {
     .sort((a, b) => (a.dueDate! > b.dueDate! ? 1 : -1))
     .slice(0, 5);
 
+  // --- Handlers ---
   const handleToggle = async (taskId: string) => {
     if (!token) return;
-
-    // Optimistic toggle
     setTasks((prev) =>
       prev.map((t) =>
         t._id === taskId ? { ...t, completed: !t.completed } : t
       )
     );
-
     try {
       await toggleTask(taskId, token);
     } catch (err) {
@@ -68,11 +78,8 @@ const Dashboard: React.FC = () => {
 
   const handleDeleteTask = async (taskId: string) => {
     if (!token) return;
-
     const removedTask = tasks.find((t) => t._id === taskId);
-    // Optimistic delete
     setTasks((prev) => prev.filter((t) => t._id !== taskId));
-
     try {
       await deleteTask(taskId, token);
     } catch (err) {
@@ -83,8 +90,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      <h1>Dashboard</h1>
-
+      <h1>{greeting}</h1> {/* <-- dynamic greeting */}
       <div className={styles.topSection}>
         {/* Quick Stats Grid */}
         <div className={styles.quickStats}>
@@ -127,7 +133,6 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
       </div>
-
       {/* Next 5 Upcoming Tasks */}
       <div className={styles.upcomingSection}>
         <h2>📅 Next 5 Due Tasks</h2>

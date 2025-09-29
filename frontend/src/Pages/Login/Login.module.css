@@ -1,0 +1,84 @@
+/* Wrapper for the form */
+.formWrapper {
+  max-width: 400px;
+  margin: 4rem auto;
+  background-color: #f3f3f4; /* same as dashboard background */
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  color: #34312d;
+}
+
+/* Heading */
+.formWrapper h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #34312d;
+}
+
+/* Inputs */
+.formWrapper input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #7e7f83;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  color: #34312d;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formWrapper input:focus {
+  border-color: #34312d;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 49, 45, 0.2);
+}
+
+/* Button */
+.formWrapper button {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #34312d;
+  color: #f3f3f4;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.formWrapper button:hover {
+  background-color: #7e7f83;
+  transform: translateY(-2px);
+}
+
+.formWrapper button:disabled {
+  background-color: #b2b2b2;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error message */
+.formWrapper p.error {
+  color: #c00;
+  margin-top: 1rem;
+}
+
+/* Sign up / login link */
+.formWrapper p.signupLink {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.formWrapper p.signupLink a {
+  color: #34312d;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.formWrapper p.signupLink a:hover {
+  color: #7e7f83;
+}

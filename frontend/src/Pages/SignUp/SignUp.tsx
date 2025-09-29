@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
-import { login as loginService } from "../../Services/authServices";
-import styles from "./Login.module.css";
+import { signup as signupService } from "../../Services/authServices";
+import styles from "./SignUp.module.css";
 
-const Login: React.FC = () => {
+const SignUp: React.FC = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -16,20 +18,20 @@ const Login: React.FC = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleLogin = async (e?: React.FormEvent) => {
+  const handleSignUp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const data = await loginService(email, password);
+      const data = await signupService(name, email, password);
       auth.login(data.token, data.user);
       navigate("/dashboard");
     } catch (err: any) {
       if (err.response && err.response.data?.message) {
         setError(err.response.data.message);
       } else {
-        setError("Login failed. Please try again.");
+        setError("Sign Up failed. Please try again.");
       }
       console.error(err);
     } finally {
@@ -39,8 +41,15 @@ const Login: React.FC = () => {
 
   return (
     <div className={styles.formWrapper}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h2>Create Account</h2>
+      <form onSubmit={handleSignUp}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Name"
+          required
+        />
         <input
           type="email"
           value={email}
@@ -56,17 +65,17 @@ const Login: React.FC = () => {
           required
         />
         <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
 
-      {error && <p className={`${styles.error}`}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-      <p className={styles.signupLink}>
-        Don't have an account? <Link to="/signup">Sign Up</Link>
+      <p className={styles.loginLink}>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
