@@ -110,7 +110,7 @@ h1 {
   /* background: #d9c5b2; */
   background: #f3f3f4;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -209,34 +209,34 @@ h1 {
 
 /* Priority badges */
 .high {
-  background: #f44336;
-  color: #f3f3f4;
+  background: #c0392b;
+  color: #fff;
 }
 
 .medium {
-  background: #d9c5b2;
-  color: #14110f;
+  background: #f39c12;
+  color: #fff;
 }
 
 .low {
-  background: #7e7f83;
-  color: #f3f3f4;
+  background: #27ae60;
+  color: #fff;
 }
 
 /* Category badges */
 .work {
   background: #34312d;
-  color: #f3f3f4;
+  color: #fff;
 }
 
 .personal {
   background: #7e7f83;
-  color: #f3f3f4;
+  color: #fff;
 }
 
 .health {
-  background: #d9c5b2;
-  color: #14110f;
+  background: #7e7f83;
+  color: #fff;
 }
 
 /* Progress Bar */

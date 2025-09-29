@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 import { login as loginService } from "../../Services/authServices";
 import styles from "./Login.module.css";
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
       auth.login(data.token, data.user);
       navigate("/dashboard");
     } catch (err: any) {
-      if (err.response && err.response.data?.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
         setError("Login failed. Please try again.");
@@ -60,10 +60,10 @@ const Login: React.FC = () => {
         </button>
       </form>
 
-      {error && <p className={`${styles.error}`}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
       <p className={styles.signupLink}>
-        Don't have an account? <Link to="/signup">Sign Up</Link>
+        Don’t have an account? <a href="/signup">Sign Up</a>
       </p>
     </div>
   );
