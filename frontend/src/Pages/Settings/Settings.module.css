@@ -1,7 +1,149 @@
+/* Whole page wrapper */
 .wrapper {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  margin-left: 212px;
+  min-height: 100%;
+  padding: 2rem 4rem;
   background-color: #f3f3f4;
+  display: flex;
+  flex-direction: column;
+  margin-left: 180px;
+  color: #34312d;
+}
+
+/* Main heading */
+.settingTitle {
+  font-size: 2.5rem;
+  margin: 0;
+  /* text-align: center; */
+}
+
+/* Each section */
+.section {
+  /* margin-bottom: 3rem; */
+  padding: 1.5rem 0;
+  border-bottom: 2px solid #7e7f83;
+}
+
+/* Section heading */
+.section h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/* Inputs */
+.section input,
+.section select {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 2px solid #7e7f83;
+  border-radius: 8px;
+  background: #fff;
+  color: #34312d;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section input:focus,
+.section select:focus {
+  border-color: #34312d;
+  box-shadow: 0 0 0 3px rgba(52, 49, 45, 0.2);
+  outline: none;
+}
+
+/* Buttons */
+.section button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 1rem;
+}
+
+/* Primary buttons */
+.section button:not(.deleteBtn) {
+  background: #34312d;
+  color: #f3f3f4;
+}
+
+.section button:not(.deleteBtn):hover {
+  background: #7e7f83;
+  color: #14110f;
+  transform: translateY(-2px);
+}
+
+/* Delete button */
+.deleteBtn {
+  background: #d9c5b2;
+  color: #14110f;
+}
+
+.deleteBtn:hover {
+  background: #34312d;
+  color: #f3f3f4;
+  transform: translateY(-2px);
+}
+
+/* Message feedback */
+.message {
+  margin-top: 1.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #34312d;
+  text-align: center;
+}
+
+/* Color Theme Swatches */
+.colorThemeSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.colorSwatch {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.1);
+  border-color: #34312d;
+}
+
+.colorSwatch.active {
+  border: 3px solid #14110f;
+}
+
+.colorLabel {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #34312d;
+  margin-top: 0.3rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .section input,
+  .section select {
+    max-width: 100%;
+  }
+
+  .section button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .colorThemeSection {
+    justify-content: flex-start;
+  }
 }
