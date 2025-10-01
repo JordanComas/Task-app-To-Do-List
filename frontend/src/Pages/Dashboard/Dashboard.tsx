@@ -198,16 +198,6 @@ const Dashboard: React.FC = () => {
                     </span>
                   )}
                 </div>
-
-                {/* Progress bar if due today */}
-                {localDate.toDateString() === new Date().toDateString() && (
-                  <div className={styles.progressBarWrapper}>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: task.completed ? "100%" : "0%" }}
-                    ></div>
-                  </div>
-                )}
               </li>
             );
           })}

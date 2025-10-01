@@ -12,3 +12,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+:root {
+  --primary-bg: #f3f3f4;
+  --primary-text: #34312d;
+  --secondary-bg: #d9c5b2;
+  --button-bg: #34312d;
+  --button-text: #f3f3f4;
+  --button-hover-bg: #7e7f83;
+  --button-hover-text: #14110f;
+}
+
+/* :root1 {
+  --primary-bg: #34312d;
+  --text: #34312d;
+  --secondary-bg: #f3f3f4;
+  --button-bg: #34312d;
+  --button-text: #f3f3f4;
+  --button-hover-bg: #7e7f83;
+  --button-hover-text: #14110f;
+} */

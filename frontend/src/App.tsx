@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,10 +12,20 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import Settings from "./Pages/Settings/Settings";
 import Sidebar from "./Components/SideBar/SideBar";
 import PrivateRoute from "./Components/PrivateRoute";
-import { useAuth } from "./Contexts/AuthContext";
+import { useAuth, Theme } from "./Contexts/AuthContext";
 
 function App() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+
+  // Apply user's theme on initial load
+  useEffect(() => {
+    if (user?.theme) {
+      const root = document.documentElement;
+      Object.entries(user.theme).forEach(([key, value]) => {
+        root.style.setProperty(key, value);
+      });
+    }
+  }, [user]);
 
   return (
     <Router>
@@ -64,7 +74,7 @@ function App() {
           }
         />
 
-        {/* Catch-all redirect to login */}
+        {/* Catch-all redirect */}
         <Route
           path="*"
           element={<Navigate to={token ? "/dashboard" : "/login"} replace />}

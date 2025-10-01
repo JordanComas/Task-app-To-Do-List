@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   margin-left: 180px;
-  color: #34312d;
+  color: var(--primary-text);
 }
 
 h1 {
@@ -26,7 +26,7 @@ h1 {
 }
 
 .statCard {
-  background: #34312d;
+  background: var(--primary-text);
   border: 1px solid #7e7f83;
   border-radius: 12px;
   padding: 1rem;
@@ -38,7 +38,7 @@ h1 {
 .statCard:hover {
   background: #7e7f83;
   transform: translateY(-3px);
-  color: #14110f;
+  color: var(--button-hover-text);
 }
 
 .statCard h2 {
@@ -49,7 +49,7 @@ h1 {
 .statCard p {
   margin: 0;
   font-size: 0.9rem;
-  color: #d9c5b2;
+  color: var(--secondary-bg);
 }
 
 /* === Category Bar Chart === */
@@ -108,7 +108,7 @@ h1 {
 
 .upcomingItem {
   /* background: #d9c5b2; */
-  background: #f3f3f4;
+  background: var(--primary-bg);
   border-radius: 8px;
   padding: 0.5rem;
   display: flex;
@@ -118,7 +118,7 @@ h1 {
 }
 
 .upcomingItem:hover {
-  background: #d9c5b2;
+  background: var(--secondary-bg);
 }
 
 .taskRow {
@@ -138,7 +138,7 @@ h1 {
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #34312d;
+  border: 2px solid var(--primary-text);
   border-radius: 6px;
   position: relative;
   cursor: pointer;
@@ -162,7 +162,7 @@ h1 {
 
 .taskTitle {
   font-weight: bold;
-  color: #34312d;
+  color: var(--primary-text);
 
   transition: color 0.2s ease, text-decoration 0.2s ease;
 }
@@ -175,7 +175,7 @@ h1 {
 
 .taskDate {
   font-size: 0.85rem;
-  color: #34312d;
+  color: var(--primary-text);
 }
 
 .deleteBtn {
@@ -225,7 +225,7 @@ h1 {
 
 /* Category badges */
 .work {
-  background: #34312d;
+  background: var(--primary-text);
   color: #fff;
 }
 
@@ -250,7 +250,7 @@ h1 {
 
 .progressBar {
   height: 100%;
-  background: #34312d;
+  background: var(--primary-text);
   transition: width 0.3s ease;
 }
 

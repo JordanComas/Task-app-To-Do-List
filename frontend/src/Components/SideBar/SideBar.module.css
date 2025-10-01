@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  background-color: #34312d;
+  background-color: var(--primary-text);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -13,7 +13,7 @@
 }
 
 .title {
-  color: #f3f3f4;
+  color: var(--button-text);
   font-weight: bold;
 }
 
@@ -29,14 +29,14 @@
 .navList li a {
   text-decoration: none;
   font-weight: bold;
-  color: #7e7f83;
+  color: var(--button-hover-bg);
 }
 
 .navList li a:hover {
   text-decoration: none;
   font-weight: bold;
-  background-color: #d9c5b2;
-  color: #34312d;
+  background-color: var(--secondary-bg);
+  color: var(--primary-text);
 }
 
 .creator {

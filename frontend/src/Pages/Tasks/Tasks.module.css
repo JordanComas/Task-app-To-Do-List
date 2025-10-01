@@ -3,7 +3,7 @@
   height: 100vh;
   overflow: hidden;
   margin-left: 230px;
-  background-color: #f3f3f4;
+  background-color: var(--primary-bg);
 }
 
 /* === Calendar Section === */
@@ -17,7 +17,7 @@
 
 .calendarSection h1 {
   margin-bottom: 1rem;
-  color: #34312d;
+  color: var(--primary-text);
 }
 
 .dayWithTask {
@@ -28,7 +28,7 @@
   content: "";
   width: 5px;
   height: 5px;
-  background-color: #34312d;
+  background-color: var(--primary-text);
   border-radius: 50%;
   position: absolute;
   left: 40%;
@@ -58,18 +58,18 @@
 
 .taskSection h2 {
   margin: 0 0 1rem 0;
-  color: #34312d;
+  color: var(--primary-text);
 }
 
 .filterIcon {
   font-size: 1.2rem;
-  color: #34312d;
+  color: var(--primary-text);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .filterIcon:hover {
-  color: #14110f;
+  color: var(--button-hover-text);
 }
 
 /* === Add Task Form === */
@@ -91,14 +91,14 @@
   font-size: 0.9rem;
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
-  background-color: #f3f3f4;
-  color: #34312d;
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
 }
 
 .addTaskForm input[type="text"]:focus,
 .addTaskForm input[type="date"]:focus,
 .addTaskForm select:focus {
-  border-color: #34312d;
+  border-color: var(--primary-text);
   box-shadow: 0 0 4px rgba(52, 49, 45, 0.3);
   background-color: #fff;
 }
@@ -116,7 +116,7 @@
 }
 
 .addTaskForm .addBtn {
-  background: #34312d;
+  background: var(--primary-text);
   color: #fff;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -126,14 +126,14 @@
 }
 
 .addTaskForm .addBtn:hover {
-  background: #14110f;
+  background: var(--button-hover-text);
 }
 
 /* Optional fields toggle button */
 .optionalToggle .optionalBtn {
   background: none;
   border: none;
-  color: #34312d;
+  color: var(--primary-text);
   cursor: pointer;
   font-size: 0.85rem;
   text-align: left;
@@ -199,7 +199,7 @@
 }
 
 .taskItem:hover {
-  background-color: #d9c5b2;
+  background-color: var(--secondary-bg);
 }
 
 /* Custom checkbox */
@@ -207,7 +207,7 @@
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #34312d;
+  border: 2px solid var(--primary-text);
   border-radius: 6px;
   margin-right: 0.8rem;
   cursor: pointer;
@@ -239,7 +239,7 @@
 }
 
 .taskTitle {
-  color: #34312d;
+  color: var(--primary-text);
   font-size: 1rem;
   margin-bottom: 0.2rem;
 }
@@ -273,7 +273,7 @@
 }
 
 .clearDateBtn {
-  background: #34312d;
+  background: var(--primary-text);
   color: #fff;
   border: none;
   padding: 0.4rem 0.8rem;
@@ -283,7 +283,7 @@
 }
 
 .clearDateBtn:hover {
-  background: #14110f;
+  background: var(--button-hover-text);
 }
 
 /* === DayPicker Global === */
@@ -292,7 +292,7 @@
   --rdp-day-width: 60px;
   --rdp-day-height: 60px;
   --rdp-day_button-border-radius: 8px;
-  --rdp-accent-color: #34312d;
+  --rdp-accent-color: var(--primary-text);
   --rdp-accent-background-color: #46e549; /* selected day */
   --rdp-today-color: #d9c5b2; /* today */
 }
@@ -306,7 +306,7 @@
   content: "";
   width: 8px;
   height: 8px;
-  background-color: #34312d;
+  background-color: var(--primary-text);
   border-radius: 50%;
   position: absolute;
   left: 50%;
@@ -378,12 +378,12 @@
   font-size: 0.85rem;
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
-  background-color: #f3f3f4;
-  color: #34312d;
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
 }
 
 .filterPanel select:focus {
-  border-color: #34312d;
+  border-color: var(--primary-text);
   box-shadow: 0 0 4px rgba(52, 49, 45, 0.3);
   background-color: #fff;
 }

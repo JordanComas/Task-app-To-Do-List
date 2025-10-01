@@ -1,26 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Settings.module.css";
-import { useAuth } from "../../Contexts/AuthContext";
+import { useAuth, Theme } from "../../Contexts/AuthContext";
 import axios from "axios";
 
 const Settings: React.FC = () => {
-  const { token, user, logout, login } = useAuth();
+  const { token, user, login, setTheme } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [password, setPassword] = useState("");
-  const [selectedTheme, setSelectedTheme] = useState("#F3F3F4");
   const [message, setMessage] = useState("");
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
+  // Selected theme state
+  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(
+    user?.theme || null
+  );
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
   const headers = { Authorization: `Bearer ${token}` };
 
-  // Update profile
+  // Define your theme options here
+  const themes: { name: string; theme: Theme }[] = [
+    {
+      name: "Default",
+      theme: {
+        "--primary-bg": "#F3F3F4",
+        "--primary-text": "#34312D",
+        "--secondary-bg": "#D9C5B2",
+        "--button-bg": "#34312D",
+        "--button-text": "#F3F3F4",
+        "--button-hover-bg": "#7E7F83",
+        "--button-hover-text": "#14110F",
+      },
+    },
+    {
+      name: "Pink",
+      theme: {
+        "--primary-bg": "#F3F3F4",
+        "--primary-text": "#D88C9A",
+        "--secondary-bg": "#F1E3D3",
+        "--button-bg": "#34312D",
+        "--button-text": "#F3F3F4",
+        "--button-hover-bg": "#fff",
+        "--button-hover-text": "#14110F",
+      },
+    },
+    {
+      name: "Gray",
+      theme: {
+        "--primary-bg": "#7E7F83",
+        "--primary-text": "#F3F3F4",
+        "--secondary-bg": "#D9C5B2",
+        "--button-bg": "#34312D",
+        "--button-text": "#F3F3F4",
+        "--button-hover-bg": "#14110F",
+        "--button-hover-text": "#F3F3F4",
+      },
+    },
+    {
+      name: "Dark",
+      theme: {
+        "--primary-bg": "#34312D",
+        "--primary-text": "#F3F3F4",
+        "--secondary-bg": "#7E7F83",
+        "--button-bg": "#14110F",
+        "--button-text": "#F3F3F4",
+        "--button-hover-bg": "#D9C5B2",
+        "--button-hover-text": "#34312D",
+      },
+    },
+    {
+      name: "Black",
+      theme: {
+        "--primary-bg": "#14110F",
+        "--primary-text": "#F3F3F4",
+        "--secondary-bg": "#34312D",
+        "--button-bg": "#D9C5B2",
+        "--button-text": "#34312D",
+        "--button-hover-bg": "#7E7F83",
+        "--button-hover-text": "#F3F3F4",
+      },
+    },
+  ];
+
   const handleUpdateProfile = async () => {
     try {
       const res = await axios.put(
         `${API_URL}/auth/update-profile`,
-        { name, email, theme: selectedTheme },
+        { name, email, theme: selectedTheme }, // send selectedTheme object
         { headers }
       );
       login(token!, res.data.user);
@@ -30,7 +96,6 @@ const Settings: React.FC = () => {
     }
   };
 
-  // Update password
   const handleUpdatePassword = async () => {
     if (!password || password.length < 6) {
       setMessage("Password must be at least 6 characters");
@@ -49,7 +114,6 @@ const Settings: React.FC = () => {
     }
   };
 
-  // Delete all tasks
   const handleDeleteTasks = async () => {
     if (!window.confirm("Are you sure you want to delete all tasks?")) return;
     try {
@@ -60,33 +124,30 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleThemeSelect = (theme: Theme) => {
+    setSelectedTheme(theme);
+    setTheme(theme); // update AuthContext and apply CSS variables
+  };
+
   return (
     <div className={styles.wrapper}>
       <h2 className={styles.settingTitle}>Settings</h2>
 
-      {/* Name Section */}
+      {/* Name */}
       <div className={styles.section}>
         <h3>Change Name</h3>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input value={name} onChange={(e) => setName(e.target.value)} />
         <button onClick={handleUpdateProfile}>Update Name</button>
       </div>
 
-      {/* Email Section */}
+      {/* Email */}
       <div className={styles.section}>
         <h3>Change Email</h3>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input value={email} onChange={(e) => setEmail(e.target.value)} />
         <button onClick={handleUpdateProfile}>Update Email</button>
       </div>
 
-      {/* Password Section */}
+      {/* Password */}
       <div className={styles.section}>
         <h3>Change Password</h3>
         <input
@@ -98,26 +159,28 @@ const Settings: React.FC = () => {
         <button onClick={handleUpdatePassword}>Update Password</button>
       </div>
 
-      {/* Color Theme Section */}
+      {/* Color Theme */}
       <div className={styles.section}>
         <h3>Color Theme</h3>
         <div className={styles.colorThemeSection}>
-          {[
-            { color: "#F3F3F4", name: "Light" },
-            { color: "#D9C5B2", name: "Beige" },
-            { color: "#7E7F83", name: "Gray" },
-            { color: "#34312D", name: "Dark" },
-            { color: "#14110F", name: "Black" },
-          ].map((theme) => (
-            <div key={theme.name}>
+          {themes.map((t) => (
+            <div
+              key={t.name}
+              style={{ display: "inline-block", margin: "0 1rem" }}
+            >
               <div
-                className={`${styles.colorSwatch} ${
-                  selectedTheme === theme.color ? styles.active : ""
-                }`}
-                style={{ backgroundColor: theme.color }}
-                onClick={() => setSelectedTheme(theme.color)}
-              ></div>
-              <div className={styles.colorLabel}>{theme.name}</div>
+                className={selectedTheme === t.theme ? styles.active : ""}
+                style={{
+                  width: 40,
+                  height: 40,
+                  backgroundColor: t.theme["--primary-text"],
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  border: "2px solid #34312D",
+                }}
+                onClick={() => handleThemeSelect(t.theme)}
+              />
+              <div style={{ textAlign: "center", marginTop: 4 }}>{t.name}</div>
             </div>
           ))}
         </div>

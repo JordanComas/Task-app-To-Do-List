@@ -41,13 +41,13 @@
   border: 2px solid #7e7f83;
   border-radius: 8px;
   background: #fff;
-  color: #34312d;
+  color: var(--primary-text);
   transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 .section input:focus,
 .section select:focus {
-  border-color: #34312d;
+  border-color: var(--primary-text);
   box-shadow: 0 0 0 3px rgba(52, 49, 45, 0.2);
   outline: none;
 }
@@ -66,25 +66,25 @@
 
 /* Primary buttons */
 .section button:not(.deleteBtn) {
-  background: #34312d;
-  color: #f3f3f4;
+  background: var(--primary-text);
+  color: var(--primary-bg);
 }
 
 .section button:not(.deleteBtn):hover {
   background: #7e7f83;
-  color: #14110f;
+  color: var(--button-hover-text);
   transform: translateY(-2px);
 }
 
 /* Delete button */
 .deleteBtn {
-  background: #d9c5b2;
-  color: #14110f;
+  background: var(--secondary-bg);
+  color: var(--button-hover-text);
 }
 
 .deleteBtn:hover {
-  background: #34312d;
-  color: #f3f3f4;
+  background: var(--primary-text);
+  color: var(--primary-bg);
   transform: translateY(-2px);
 }
 
@@ -93,7 +93,7 @@
   margin-top: 1.5rem;
   font-weight: bold;
   font-size: 1.1rem;
-  color: #34312d;
+  color: var(--primary-text);
   text-align: center;
 }
 
@@ -117,17 +117,17 @@
 
 .colorSwatch:hover {
   transform: scale(1.1);
-  border-color: #34312d;
+  border-color: var(--primary-text);
 }
 
 .colorSwatch.active {
-  border: 3px solid #14110f;
+  border: 3px solid var(--button-hover-text);
 }
 
 .colorLabel {
   text-align: center;
   font-size: 0.9rem;
-  color: #34312d;
+  color: var(--primary-text);
   margin-top: 0.3rem;
 }
 
